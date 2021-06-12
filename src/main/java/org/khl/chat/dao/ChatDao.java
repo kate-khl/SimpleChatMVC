@@ -1,0 +1,11 @@
+package org.khl.chat.dao;
+
+import java.util.List;
+
+import org.khl.chat.entity.Chat;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ChatDao  extends JpaRepository<Chat, Long> {
+
+	List<Chat> findByUsersId(Long id);
+}
