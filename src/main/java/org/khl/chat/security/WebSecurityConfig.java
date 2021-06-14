@@ -9,6 +9,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.filter.OncePerRequestFilter;
+import org.thymeleaf.spring5.SpringTemplateEngine;
 
 @Configuration
 @EnableWebSecurity
@@ -19,15 +21,27 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
+		http.headers().frameOptions().disable();
 		http.httpBasic().disable().csrf().disable().sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
 				.antMatchers("/", "/js/**", "/css/**", "/img/**", "/webjars/**").permitAll()
 				.antMatchers("/admin/*").hasRole("ADMIN")
 				.antMatchers("/user/*").hasRole("USER")
 				.antMatchers("/registation", "/login").permitAll()
+				
 //                .and().formLogin().loginPage("/login").permitAll()
 
-				.and().addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
+				.and()
+				.addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
 	}
+	
+//	@Bean
+//	public SpringTemplateEngine templateEngine() {
+//	    SpringTemplateEngine templateEngine = new SpringTemplateEngine();
+//	    templateEngine.setTemplateResolver(templateResolver());
+//	    templateEngine.addDialect(new TilesDialect());
+//	    templateEngine.addDialect(new SpringSecurityDialect());
+//	    return templateEngine;
+//	}
 
 }

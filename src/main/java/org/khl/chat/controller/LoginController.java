@@ -4,6 +4,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.khl.chat.common.Constant;
+import org.khl.chat.common.Role;
 import org.khl.chat.dto.LoginRequestDto;
 import org.khl.chat.dto.LoginResponseDto;
 import org.khl.chat.dto.RegistrationUserRequest;
@@ -30,9 +32,8 @@ public class LoginController {
 	private final HttpServletResponse httpServletResponse;
 
 	@Autowired
-	public LoginController(@Qualifier("db") UserService userService, 
-											TokenService tokenService,
-											HttpServletResponse httpServletResponse) {
+	public LoginController(@Qualifier("db") UserService userService, TokenService tokenService,
+			HttpServletResponse httpServletResponse) {
 		this.userService = userService;
 		this.tokenService = tokenService;
 		this.httpServletResponse = httpServletResponse;
@@ -41,12 +42,7 @@ public class LoginController {
 	@GetMapping("/login")
 	public String loginGet(Model model) {
 		model.addAttribute("loginForm", new LoginRequestDto());
-		return "login";
-	}
-	@GetMapping("/logout")
-	public String logout(Model model) {
-		httpServletResponse.addCookie(new Cookie("jwtToken", null));
-		return "login";
+		return "/auth/login";
 	}
 
 	@PostMapping("/login")
@@ -54,15 +50,21 @@ public class LoginController {
 		if (userService.checkLogin(requestDto.getEmail(), requestDto.getPassword())) {
 
 			String token = tokenService.getToken(requestDto.getEmail(), requestDto.getPassword());
-			httpServletResponse.addCookie(new Cookie("jwtToken", token));
-			return "index";
+			httpServletResponse.addCookie(new Cookie(Constant.JWT_TOKEN, token));
+			return "redirect:/user/list";
 		} else
 			return "/error/access-denied";
 	}
 
+	@GetMapping("/logout")
+	public String logout(Model model) {
+		httpServletResponse.addCookie(new Cookie(Constant.JWT_TOKEN, null));
+		return "login";
+	}
+
 	@PostMapping("/registration")
 	public String create(@Valid RegistrationUserRequest user) {
-		user.setRole("ROLE_USER");
+		user.setRole(Role.ROLE_USER);
 		userService.create(user);
 		return "redirect:/login";
 	}

@@ -127,7 +127,7 @@ public class UserServiceImpl implements UserService{
 	@Override
 	@Transactional
 	public Collection<UserDto> findByName(String name) {
-		Collection<User> users  = uDao.findByNameLike(name);
+		Collection<User> users  = uDao.findByNameLike("%" + name + "%");
 		return userMapper.toListOfDto(users);
 	}
 }

@@ -46,7 +46,7 @@ public class Message {
 		super();
 		this.id = msgDto.getId();
 		this.value = msgDto.getValue();
-		this.author = new User(msgDto.getAuthor());
+//		this.author = new User(msgDto.getAuthor());
 		this.date = msgDto.getDate();
 	}
 	

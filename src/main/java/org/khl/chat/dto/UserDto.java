@@ -4,6 +4,8 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import org.khl.chat.common.Role;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,7 +22,7 @@ public class UserDto {
 	private String email;
 	@NotBlank
 	@NotNull
-	private String role;
+	private Role role;
 	@NotBlank
 	@NotNull
 	private String password;
@@ -28,7 +30,7 @@ public class UserDto {
 	public UserDto() {
 	}
 
-	public UserDto(String name, String email, String password, String role) {
+	public UserDto(String name, String email, String password, Role role) {
 		super();
 		this.name = name;
 		this.email = email;

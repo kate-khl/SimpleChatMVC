@@ -4,6 +4,8 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import org.khl.chat.common.Role;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,23 +14,19 @@ import lombok.Setter;
 public class RegistrationUserRequest {
 
 	@NotBlank
-	@NotNull
 	private String name;
 	@Email
-	@NotNull
 	private String email;
 	@NotBlank
-	@NotNull
 	private String password;
-	@NotBlank
-	@NotNull
-	private String role;
+
+	private Role role;
 
 	public RegistrationUserRequest() {
 	}
 
 	public RegistrationUserRequest(@NotBlank @NotNull String name, @Email @NotNull String email,
-			@NotBlank @NotNull String password, @NotBlank @NotNull String role) {
+			@NotBlank @NotNull String password, Role role) {
 		super();
 		this.name = name;
 		this.email = email;

@@ -27,16 +27,16 @@ public class SimpleChatApplication {
 		SpringApplication.run(SimpleChatApplication.class, args);
 	}
 
-	@Bean
-	public FilterRegistrationBean<AuthFilter> loggingFilter() {
-		FilterRegistrationBean<AuthFilter> registrationBean = new FilterRegistrationBean<>();
-
-		registrationBean.setFilter(new AuthFilter());
-		registrationBean.addUrlPatterns("/users/*", "/chats/*", "/messages/*", "/user/*");
-		registrationBean.setOrder(0);
-
-		return registrationBean;
-	}
+//	@Bean
+//	public FilterRegistrationBean<AuthFilter> loggingFilter() {
+//		FilterRegistrationBean<AuthFilter> registrationBean = new FilterRegistrationBean<>();
+//
+//		registrationBean.setFilter(new AuthFilter());
+//		registrationBean.addUrlPatterns("/users/*", "/chats/*", "/messages/*", "/user/*");
+//		registrationBean.setOrder(0);
+//
+//		return registrationBean;
+//	}
 
 	@Bean
 	@Scope(scopeName = WebApplicationContext.SCOPE_REQUEST)
