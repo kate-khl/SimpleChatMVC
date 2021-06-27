@@ -30,7 +30,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 @CrossOrigin(origins = "http://127.0.0.1:8888")
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/users")
 @Scope(scopeName = WebApplicationContext.SCOPE_REQUEST)
 public class UserController {
 
@@ -49,11 +49,10 @@ public class UserController {
 	}
 
 	@GetMapping("/list")
-	public ModelAndView  getAllUsers(Model model) {
+	public String getAllUsers(Model model) {
 		ArrayList<UserDto> users = (ArrayList<UserDto>)userService.getAllUsers();
-		ModelAndView mav = new ModelAndView("usersList");
-		mav.addObject("users", "ss");
-		return mav;
+		model.addAttribute("users", users);
+		return "usersList";
 	}
 
 	@GetMapping("/{id}")

@@ -4,17 +4,22 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import javax.crypto.spec.SecretKeySpec;
+
 import org.khl.chat.Session;
 import org.khl.chat.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties.Jwt;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.impl.crypto.DefaultJwtSignatureValidator;
 
 @Service
 
@@ -26,6 +31,8 @@ public class TokenServiceImpl implements TokenService {
 	}
 
 	private UserService userService;
+	private static final SignatureAlgorithm ALGORITM = SignatureAlgorithm.ES256;
+	private static final String SECRET_KEY = "secretKey";
 
 	@Override
 	public String getToken(String email, String password) {
@@ -33,12 +40,9 @@ public class TokenServiceImpl implements TokenService {
 		UserDto userDto = new UserDto();
 		userDto = userService.findUserByEmail(email);
 		String jws = Jwts.builder().claim("email", userDto.getEmail())
-				.setExpiration(new Date(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(3 * 3600 + 300)))
-				.claim("id", userDto.getId())
-				.claim("name", userDto.getName())
-				.claim("role", userDto.getRole())
-				.signWith(SignatureAlgorithm.HS512, "secretKey")
-				.compact();
+				.setExpiration(new Date(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(3 * 300)))
+				.claim("id", userDto.getId()).claim("name", userDto.getName()).claim("role", userDto.getRole())
+				.signWith(SignatureAlgorithm.HS512, SECRET_KEY).compact();
 
 		return jws;
 	}
@@ -48,8 +52,8 @@ public class TokenServiceImpl implements TokenService {
 		if (token == null)
 			return false;
 		try {
-			Jwts.parser().setSigningKey("secretKey").parseClaimsJws(token).getBody();
-			System.out.println("Valid Token " + token);
+			Claims claims = Jwts.parser().setSigningKey("secretKey").parseClaimsJws(token).getBody();
+			Date exp = claims.getExpiration();
 			return true;
 
 		} catch (ExpiredJwtException expiredJwtException) {
@@ -66,23 +70,30 @@ public class TokenServiceImpl implements TokenService {
 	@Override
 	public UserDto getUserFromToken(String token) {
 
-		if (token != null || token != "") {
-			token = token.replace("_", "+").replace("-", "/");
+		token = token.replace("_", "+").replace("-", "/");
 
-			String[] split_string = token.split("\\.");
-			String base64EncodedHeader = split_string[0];
-			String base64EncodedBody = split_string[1];
-			System.out.println(base64EncodedHeader);
-			System.out.println(base64EncodedBody);
+		String[] split_string = token.split("\\.");
+		String base64EncodedHeader = split_string[0];
+		String base64EncodedBody = split_string[1];
+		System.out.println(base64EncodedHeader);
+		System.out.println(base64EncodedBody);
 
-			String body = new String(Base64.getMimeDecoder().decode(base64EncodedBody));
-			Gson gson = new Gson();
-			UserDto user = gson.fromJson(body, UserDto.class);
+		String body = new String(Base64.getMimeDecoder().decode(base64EncodedBody));
+		Gson gson = new Gson();
+		UserDto user = gson.fromJson(body, UserDto.class);
 
-			return user;
+		return user;
+	}
 
-		} else
-			return null;
+	@Override
+	public boolean almostExpire(String token) {
+		Claims claims = Jwts.parser().setSigningKey("secretKey").parseClaimsJws(token).getBody();
+		Date exp = claims.getExpiration();
+		Date almostExp = new Date(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(300));
+		if (exp.after(almostExp))
+			return false;
+		else
+			return true;
 	}
 
 }

@@ -51,14 +51,16 @@ public class LoginController {
 
 			String token = tokenService.getToken(requestDto.getEmail(), requestDto.getPassword());
 			httpServletResponse.addCookie(new Cookie(Constant.JWT_TOKEN, token));
-			return "redirect:/user/list";
+			return "redirect:/users/list";
 		} else
 			return "/error/access-denied";
 	}
 
 	@GetMapping("/logout")
 	public String logout(Model model) {
-		httpServletResponse.addCookie(new Cookie(Constant.JWT_TOKEN, null));
+		Cookie cookie = new Cookie(Constant.JWT_TOKEN, null);
+		cookie.setMaxAge(0);
+		httpServletResponse.addCookie(cookie);
 		return "login";
 	}
 
