@@ -1,32 +1,32 @@
 package org.khl.chat.controller;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.validation.Valid;
 
-import org.khl.chat.Session;
 import org.khl.chat.dto.ChatDto;
 import org.khl.chat.dto.CreateChatRequest;
-import org.khl.chat.dto.UserDto;
 import org.khl.chat.service.ChatService;
-import org.khl.chat.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.WebApplicationContext;
 
 @CrossOrigin(origins = "http://127.0.0.1:8888", allowedHeaders = "Authorization")
-@RestController
+@Controller
 @Scope(scopeName = WebApplicationContext.SCOPE_REQUEST)
 public class ChatController {
 
@@ -36,6 +36,13 @@ public class ChatController {
 	public ChatController(@Qualifier("db") ChatService chatService) {
 		this.chatService = chatService;
 	}
+	
+	@GetMapping("/user-frame")
+	public String getChatrFrame(Model model, @RequestParam Long id) {
+		ChatDto ch = chatService.createPrivateChatWithUserIfNotExist(id);
+		model.addAttribute("chat", ch);
+		return "ChatFrame";
+	} 
 	
 	@PostMapping("/chats")
 	@ResponseStatus(code = HttpStatus.CREATED)

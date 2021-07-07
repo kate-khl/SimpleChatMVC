@@ -1,6 +1,7 @@
 package org.khl.chat.service;
 
 import java.util.Collection;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
@@ -10,15 +11,20 @@ import org.khl.chat.dao.MessageDao;
 import org.khl.chat.dao.UserDao;
 import org.khl.chat.dto.ChatDto;
 import org.khl.chat.dto.CreateChatRequest;
+import org.khl.chat.dto.MessageDto;
 import org.khl.chat.entity.Chat;
+import org.khl.chat.entity.ChatType;
 import org.khl.chat.entity.Message;
 import org.khl.chat.entity.User;
 import org.khl.chat.exception.AccessControlException;
 import org.khl.chat.mapper.ChatMapper;
+import org.khl.chat.mapper.MessageMapper;
+import org.khl.chat.security.CustomUserDetails;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -37,7 +43,7 @@ public class ChatServiceImpl implements ChatService{
 	@Autowired
 	private Session session;
 	@Autowired
-	private ModelMapper mapper;
+	private MessageMapper messageMapper;
 	@Autowired
 	private ChatMapper chatMapper;
 	
@@ -100,6 +106,35 @@ public class ChatServiceImpl implements ChatService{
 			chDao.delete(c);
 		} else 
 		throw new AccessControlException();
+	}
+
+	@Override
+	public ChatDto createPrivateChatWithUserIfNotExist(Long userId) {
+		CustomUserDetails userDetails = (CustomUserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		User author = uDao.findByEmail(userDetails.getUsername()).get();
+		User companion = uDao.findById(userId).get();
+		
+		Long hash = userId + author.getId();
+		Chat chat = chDao.findByHashAndType(hash, ChatType.PRIVATE);
+		if(chat == null) {
+			chat = Chat.builder()
+			.author(author)
+			.hash(hash)
+			.build();
+			
+			chDao.save(chat);
+			Message msg = new Message();
+			msg.setAuthor(author);
+			msg.setValue("Hello everyone!1");
+			msg.setChat(chat);
+			msgDao.save(msg);
+			chat.getMessages().add(msg);
+			chat.getUsers().add(author);
+			chat.getUsers().add(companion);
+		}
+		
+		
+		return chatMapper.toDto(chat);
 	}
 	
 

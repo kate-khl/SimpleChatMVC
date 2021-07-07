@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+</head>
+
+<body>
+	<div layout:fragment="content" th:remove="tag">
+		<div style="height:200px">
+			<div th:each="msg : ${chat.messages}">
+				<div th:text = "${msg.value}"></div>
+			</div>
+		</div>
+		<div>
+			<input class="form-control" type="text" id="text-fiel"/>
+	        <!--  
+	        -->
+	        <input type="button" id="send-msg" class="form-control btn btn-info">   
+		</div>
+	</div>
+</body>
+</html>

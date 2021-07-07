@@ -37,14 +37,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.and()
 				.headers().frameOptions().disable()
 			.and()
-//				.formLogin()
-//					.loginPage("/login").permitAll()
-////					.loginProcessingUrl("/login").permitAll()
-//					.usernameParameter("email")
-//					.passwordParameter("password")
-//					.defaultSuccessUrl("/users/list")
-//					.failureForwardUrl("/error/access-denied")
-//			.and()
+				.formLogin()
+					.loginPage("/login").permitAll()
+					.defaultSuccessUrl("/users/list", true)
+					.failureForwardUrl("/login.html?error=true")
+			.and()
+			.logout().logoutUrl("/logout").deleteCookies(Constant.JWT_TOKEN)
+			.and()
 			.addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
 	}
 	

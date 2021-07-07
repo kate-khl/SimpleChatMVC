@@ -71,8 +71,8 @@ public class AuthFilter extends OncePerRequestFilter {
 					token = cookie.getValue();
 				}
 			}
-			if (tokenService.almostExpire(token))
-				token = tokenService.getToken(Email, password)
+//			if (tokenService.almostExpire(token))
+//				token = tokenService.getToken(Email, password)
 		}
 		return token;
 	}

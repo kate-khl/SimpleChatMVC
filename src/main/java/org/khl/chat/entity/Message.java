@@ -1,6 +1,6 @@
 package org.khl.chat.entity;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -11,8 +11,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 
+import org.khl.chat.DateHelper;
 import org.khl.chat.dto.MessageDto;
 
+import lombok.Data;
+
+@Data
 @Entity
 public class Message {
 
@@ -26,7 +30,7 @@ public class Message {
 	@JoinColumn(name = "author_id")
 	private User author;
 	
-	private Date date;
+	private OffsetDateTime date = DateHelper.now();
 	
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "chat_id")
@@ -34,7 +38,7 @@ public class Message {
 	
 	public Message() {}
 	
-	public Message(Long id, String value, User author, Date date) {
+	public Message(Long id, String value, User author, OffsetDateTime date) {
 		super();
 		this.id = id;
 		this.value = value;
@@ -46,7 +50,6 @@ public class Message {
 		super();
 		this.id = msgDto.getId();
 		this.value = msgDto.getValue();
-//		this.author = new User(msgDto.getAuthor());
 		this.date = msgDto.getDate();
 	}
 	
@@ -54,41 +57,9 @@ public class Message {
 
 		this.value = value;
 		this.author = author;
-		this.date = new Date();
+		this.date = DateHelper.now();
 		this.chat = chat;
 	}
 	
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	public String getValue() {
-		return value;
-	}
-	public void setValue(String value) {
-		this.value = value;
-	}
-	public User getAuthor() {
-		return author;
-	}
-	public void setAuthor(User author) {
-		this.author = author;
-	}
-	public Date getDate() {
-		return date;
-	}
-	public void setDate(Date date) {
-		this.date = date;
-	}
-
-	public Chat getChat() {
-		return chat;
-	}
-
-	public void setChat(Chat chat) {
-		this.chat = chat;
-	}
 	
 }

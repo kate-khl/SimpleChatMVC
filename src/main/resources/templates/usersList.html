@@ -5,22 +5,32 @@
 <head>
 <meta charset="UTF-8">
 <title>Orders</title>
+	<script src="/webjars/jquery/jquery.min.js"></script>
+	<script src="/webjars/sockjs-client/sockjs.min.js"></script>
+	<script src="/webjars/stomp-websocket/stomp.min.js"></script>
+	<script src="/js/app.js"></script>
 </head>
 
-<div layout:fragment="content" th:remove="tag">
-	<h1>Пользователи</h1>
-	<table>
-		<tr>
-			<th>Name</th>
-			<th>Email</th>
-		</tr>
-		<th:block th:each="user : ${users}">
+<body>
+	<div layout:fragment="content" th:remove="tag">
+		<h1>Пользователи</h1>
+		<table>
 			<tr>
-				<td th:text="${user.name}"></td>
-				<td th:text="${user.email}"></td>
+				<th>Name</th>
+				<th>Email</th>
 			</tr>
-		</th:block>
-	</table>
-</div>
-
+			<th:block th:each="user : ${users}">
+				<tr th:id = "${user.id}" name="userLine">
+					<td th:text="${user.name}"></td>
+					<td th:text="${user.email}"></td>
+				</tr>
+			</th:block>
+		</table>
+		<div>
+			 <iframe width="468" height="400" align="left" hidden id="frame"> 
+		 	</iframe>
+		</div>
+	<script src="/js/init.js"></script>
+	</div>
+</body>
 </html>

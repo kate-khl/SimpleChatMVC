@@ -17,6 +17,7 @@ public interface ChatService {
 	public void removeChat(Long id);
 	public ChatDto findChat(Long id);
 //	public Collection<MessageDto> getMessages(Long chatId);
+	public ChatDto createPrivateChatWithUserIfNotExist(Long id);
 	
 	
 	

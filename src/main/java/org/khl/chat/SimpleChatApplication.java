@@ -4,8 +4,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.khl.chat.dto.UserDto;
 import org.khl.chat.entity.User;
-import org.khl.chat.security.AuthFilter;
-import org.khl.chat.service.TokenService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.modelmapper.TypeMap;
@@ -14,17 +12,33 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
+import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
+import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
 @SpringBootApplication
-public class SimpleChatApplication {
+@EnableWebSocketMessageBroker
+public class SimpleChatApplication implements WebSocketMessageBrokerConfigurer {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SimpleChatApplication.class, args);
+	}
+
+	@Override
+	public void configureMessageBroker(MessageBrokerRegistry config) {
+		config.enableSimpleBroker("/topic");
+		config.enableSimpleBroker("/chat-broker");
+		config.setApplicationDestinationPrefixes("/app");
+//		config.setUserDestinationPrefix("/secured/user");
+	}
+
+	@Override
+	public void registerStompEndpoints(StompEndpointRegistry registry) {
+		registry.addEndpoint("/gs-guide-websocket").withSockJS();
 	}
 
 //	@Bean
