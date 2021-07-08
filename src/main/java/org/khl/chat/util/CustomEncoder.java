@@ -1,5 +1,7 @@
 package org.khl.chat.util;
 
+import java.util.Objects;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 @Component
@@ -12,10 +14,7 @@ public class CustomEncoder implements PasswordEncoder {
 
 	@Override
 	public boolean matches(CharSequence rawPassword, String encodedPassword) {
-		if (rawPassword.toString() == encodedPassword)
-			return true;
-		else
-			return false;
+		return Objects.equals(rawPassword.toString(), encodedPassword);
 	}
 
 }

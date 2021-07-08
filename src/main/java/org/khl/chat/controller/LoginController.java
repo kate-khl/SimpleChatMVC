@@ -53,16 +53,16 @@ public class LoginController {
 			httpServletResponse.addCookie(new Cookie(Constant.JWT_TOKEN, token));
 			return "redirect:/users/list";
 		} else
-			return "/error/access-denied";
+			return "redirect:/login?error=true";
 	}
 
-	@GetMapping("/logout")
-	public String logout(Model model) {
-		Cookie cookie = new Cookie(Constant.JWT_TOKEN, null);
-		cookie.setMaxAge(0);
-		httpServletResponse.addCookie(cookie);
-		return "login";
-	}
+//	@GetMapping("/logout")
+//	public String logout(Model model) {
+//		Cookie cookie = new Cookie(Constant.JWT_TOKEN, null);
+//		cookie.setMaxAge(0);
+//		httpServletResponse.addCookie(cookie);
+//		return "login";
+//	}
 
 	@PostMapping("/registration")
 	public String create(@Valid RegistrationUserRequest user) {
