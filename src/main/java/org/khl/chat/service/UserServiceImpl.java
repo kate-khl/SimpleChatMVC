@@ -104,8 +104,7 @@ public class UserServiceImpl implements UserService{
 	@Override
 	@Transactional
 	public UserDto findUserByEmail(String email) {
-		
-		User u = uDao.findByEmail(email).get();
+		User u = uDao.findByEmail(email).orElseGet(() -> null);
 		return userMapper.toDto(u);
 	}
 

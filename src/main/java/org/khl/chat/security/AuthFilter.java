@@ -43,21 +43,25 @@ public class AuthFilter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 
 		String token = getTokenFromCookies(request);
-
-		if (token != null && tokenService.verificationToken(token)) {
-			String userLogin = tokenService.getUserFromToken(token).getEmail();
-			authentiticate(userLogin);
-
+		authentiticate(token);
+		try{
+			filterChain.doFilter(request, response);
+		}finally {
+			unAutentificate();
 		}
-		filterChain.doFilter(request, response);
 	}
 
-	private void authentiticate(String userLogin) {
+	private void unAutentificate() {
+		SecurityContextHolder.getContext().setAuthentication(null);
+	}
 
-		CustomUserDetails customUserDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(userLogin);
-		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(customUserDetails, null,
-				customUserDetails.getAuthorities());
-		SecurityContextHolder.getContext().setAuthentication(auth);
+	private void authentiticate(String token) {
+		CustomUserDetails customUserDetails = (CustomUserDetails) tokenService.getUserDetailsFromToken(token);
+		if(customUserDetails != null) {
+			UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(customUserDetails, null,
+					customUserDetails.getAuthorities());
+			SecurityContextHolder.getContext().setAuthentication(auth);
+		}
 	}
 
 	private String getTokenFromCookies(HttpServletRequest request) {

@@ -45,16 +45,16 @@ public class LoginController {
 		return "/auth/login";
 	}
 
-	@PostMapping("/login")
-	public String auth(LoginRequestDto requestDto) {
-		if (userService.checkLogin(requestDto.getEmail(), requestDto.getPassword())) {
+//	@PostMapping("/login")
+//	public String auth(LoginRequestDto requestDto) {
+//		if (userService.checkLogin(requestDto.getEmail(), requestDto.getPassword())) {
 
-			String token = tokenService.getToken(requestDto.getEmail(), requestDto.getPassword());
-			httpServletResponse.addCookie(new Cookie(Constant.JWT_TOKEN, token));
-			return "redirect:/users/list";
-		} else
-			return "redirect:/login?error=true";
-	}
+//			String token = tokenService.getToken(requestDto.getEmail(), requestDto.getPassword());
+//			httpServletResponse.addCookie(new Cookie(Constant.JWT_TOKEN, token));
+//			return "redirect:/users/list";
+//		} else
+//			return "redirect:/login?error=true";
+//	}
 
 //	@GetMapping("/logout")
 //	public String logout(Model model) {
