@@ -1,5 +1,6 @@
 package org.khl.chat.security;
 
+import org.khl.chat.common.Constant;
 import org.khl.chat.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -26,7 +27,8 @@ public class WebSecurityConfig {
 		protected void configure(HttpSecurity http) throws Exception {
 			http.antMatcher("/chat/**").authorizeRequests().anyRequest().hasRole("USER")
 			.and().authenticationProvider(new JwtAuthentiticationProvider(tokens))
-			.addFilterBefore(new AuthFilter(), UsernamePasswordAuthenticationFilter.class);
+			.addFilterBefore(new AuthFilter(), UsernamePasswordAuthenticationFilter.class)
+			.formLogin();
 		}
 	}
 
@@ -42,7 +44,8 @@ public class WebSecurityConfig {
 			.authorizeRequests().requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
 			.anyRequest().authenticated()
 			.and().formLogin().loginPage("/login").permitAll().successHandler(new MyAuthenticationSuccessHandler(tokens, "/chat", true))
-			.and().rememberMe().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+			.and().logout().deleteCookies(Constant.JWT_TOKEN)
+			.and().httpBasic().disable().csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		}
 		
 	}
