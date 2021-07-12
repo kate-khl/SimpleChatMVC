@@ -48,12 +48,12 @@ public class UserController {
 		return true;
 	}
 
-	@GetMapping("/list")
-	public String getAllUsers(Model model) {
-		ArrayList<UserDto> users = (ArrayList<UserDto>)userService.getAllUsers();
-		model.addAttribute("users", users);
-		return "usersList";
-	}
+//	@GetMapping("/list")
+//	public String getAllUsers(Model model) {
+//		ArrayList<UserDto> users = (ArrayList<UserDto>)userService.getAllUsers();
+//		model.addAttribute("users", users);
+//		return "Main";
+//	}
 
 	@GetMapping("/{id}")
 	@ResponseStatus(code = HttpStatus.OK)

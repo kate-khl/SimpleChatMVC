@@ -1,65 +1,50 @@
 package org.khl.chat.security;
 
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.khl.chat.common.Constant;
+import org.khl.chat.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationDetailsSource;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.ForwardAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.WebAuthenticationDetails;
-import org.springframework.web.filter.OncePerRequestFilter;
-import org.thymeleaf.spring5.SpringTemplateEngine;
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig { 
 
-	@Autowired
-	private AuthFilter authFilter;
-	 
-
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-//		http.headers().frameOptions().disable();
-		http.authorizeRequests()
-			.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-			.antMatchers("/users/**").hasRole("USER")
-			
-			.and().httpBasic().disable().csrf().disable().sessionManagement()
-				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-			.and().headers().frameOptions().disable()
-			
-			.and().formLogin()
-//					.loginPage("/login").permitAll()
-					.successHandler(new MyAuthenticationSuccessHandler("/users/list", true))
-					.failureHandler(new MyAuthenticationFailureHandler("/login?error=true"))
-//					.failureForwardUrl("/login?error=true")
-			.and().logout().logoutUrl("/logout").deleteCookies(Constant.JWT_TOKEN)
-			.and().addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
+	@Configuration
+	@Order(1) 
+	public static class jwtAuthConfig extends WebSecurityConfigurerAdapter{
+		
+		@Autowired
+		private TokenService tokens;
+		
+		@Override
+		protected void configure(HttpSecurity http) throws Exception {
+			http.antMatcher("/chat/**").authorizeRequests().anyRequest().hasRole("USER")
+			.and().authenticationProvider(new JwtAuthentiticationProvider(tokens))
+			.addFilterBefore(new AuthFilter(), UsernamePasswordAuthenticationFilter.class);
+		}
 	}
 
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder(10);
-//    }
+	@Configuration
+	public static class LoginPasswordAuthConfig extends WebSecurityConfigurerAdapter{
+
+		@Autowired
+		private TokenService tokens;
+
+		@Override
+		protected void configure(HttpSecurity http) throws Exception {
+			http
+			.authorizeRequests().requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+			.anyRequest().authenticated()
+			.and().formLogin().loginPage("/login").permitAll().successHandler(new MyAuthenticationSuccessHandler(tokens, "/chat", true))
+			.and().rememberMe().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		}
+		
+	}
 
 }

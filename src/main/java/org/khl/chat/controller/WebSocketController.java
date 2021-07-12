@@ -23,7 +23,7 @@ public class WebSocketController {
 	@Autowired
 	private SimpMessagingTemplate simpMessagingTemplate;
 
-	@MessageMapping("/chat")
+	@MessageMapping("/chatr")
 	public void message(@Payload Message<String> msg, Principal user, @Header("simpSessionId") String sessionId)	throws Exception {
 		System.out.println("here");
 //		OutputMessage out = new OutputMessage(msg.getFrom(), msg.getText(),	new SimpleDateFormat("HH:mm").format(new Date()));

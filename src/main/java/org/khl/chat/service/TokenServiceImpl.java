@@ -4,6 +4,7 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import org.khl.chat.common.Role;
 import org.khl.chat.dto.UserDto;
 import org.khl.chat.security.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 @Service
-
 public class TokenServiceImpl implements TokenService {
 
 	private static final SignatureAlgorithm ALGORITM = SignatureAlgorithm.ES256;
@@ -27,11 +27,14 @@ public class TokenServiceImpl implements TokenService {
 
 	@Override
 	public String createToken(UserDto userDto) {
-		String jws = Jwts.builder().claim("email", userDto.getEmail())
+		return asToken(userDto.getEmail(), userDto.getId(), userDto.getName(), userDto.getRole());
+	}
+	
+	private String asToken(String email, Long id, String name, Role role) {
+		String jws = Jwts.builder().claim("email", email)
 				.setExpiration(new Date(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(3 * 300)))
-				.claim("id", userDto.getId()).claim("name", userDto.getName()).claim("role", userDto.getRole())
+				.claim("id", id).claim("name", name).claim("role", role)
 				.signWith(SignatureAlgorithm.HS512, SECRET_KEY).compact();
-
 		return jws;
 	}
 
@@ -85,8 +88,13 @@ public class TokenServiceImpl implements TokenService {
 	}
 
 	@Override
-	public CustomUserDetails getUserDetailsFromToken(String token) {
-		return verificationToken(token) ? CustomUserDetails.from(getUserFromToken(token), token) : null;
+	public CustomUserDetails asDetails(String token) {
+		return verificationToken(token) ? CustomUserDetails.from(getUserFromToken(token)) : null;
+	}
+
+	@Override
+	public String asToken(CustomUserDetails details) {
+		return asToken(details.getEmail(), details.getId(), details.getUsername(), details.getRole());
 	}
 
 }

@@ -1,12 +1,15 @@
 package org.khl.chat.controller;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.validation.Valid;
 
 import org.khl.chat.dto.ChatDto;
 import org.khl.chat.dto.CreateChatRequest;
+import org.khl.chat.dto.UserDto;
 import org.khl.chat.service.ChatService;
+import org.khl.chat.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
@@ -68,4 +71,15 @@ public class ChatController {
 	public void removeUsers(@RequestBody @Valid Collection <Long> userIds, @PathVariable(name = "id") Long chat_id) {
 		chatService.removeUsers(userIds, chat_id);
 	}
+	
+	@Autowired
+	private UserService userService;
+	
+	@GetMapping("/chat")
+	public String getAllUsers(Model model) {
+		ArrayList<UserDto> users = (ArrayList<UserDto>)userService.getAllUsers();
+		model.addAttribute("users", users);
+		return "Main";
+	}
+	
 }

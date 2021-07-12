@@ -3,6 +3,7 @@ package org.khl.chat.security;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.khl.chat.common.Role;
 import org.khl.chat.dto.UserDto;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,26 +17,22 @@ public class CustomUserDetails implements UserDetails {
 
 	private static final long serialVersionUID = 1L;
 	
+	@Getter
+	private Long id;
 	private String usrename;
+	@Getter
+	private String email;
 	private String password;
 	@Getter
-	private String token;
-	private Collection<? extends GrantedAuthority> grantedAuthorities;
+	private Role role;
 
-//	public static CustomUserDetails fromUserDtoToCustomUserDetails(UserDto userDto) {
-//		CustomUserDetails c = new CustomUserDetails();
-//		c.usrename = userDto.getEmail();
-//		c.password = userDto.getPassword();
-//		c.grantedAuthorities = Collections.singletonList(new SimpleGrantedAuthority(userDto.getRole().name()));
-//		return c;
-//	}
-
-	public static CustomUserDetails from(UserDto user, String token) {
+	public static CustomUserDetails from(UserDto user) {
 		CustomUserDetails details = CustomUserDetails.builder()
 		.password(user.getPassword())
 		.usrename(user.getName())
-		.token(token)
-		.grantedAuthorities(Collections.singletonList(new SimpleGrantedAuthority(user.getRole().name())))
+		.email(user.getEmail())
+		.id(user.getId())
+		.role(user.getRole())
 		.build();
 		return details;
 	}
@@ -43,7 +40,7 @@ public class CustomUserDetails implements UserDetails {
 	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return grantedAuthorities;
+		return Collections.singletonList(new SimpleGrantedAuthority(role.name()));
 	}
 
 	@Override

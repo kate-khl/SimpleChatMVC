@@ -10,7 +10,9 @@ public interface TokenService {
 	public boolean verificationToken(String token);
 
 	public UserDto getUserFromToken(String token);
-	public CustomUserDetails getUserDetailsFromToken(String token);
+	
+	public CustomUserDetails asDetails(String token);
+	public String asToken(CustomUserDetails details);
 
 	public boolean almostExpire(String token);
 
