@@ -5,7 +5,7 @@ var init = function(){
 	  var frame = $("#frame");
 	  if(frame){
 		frame.prop( "hidden", null );
-		frame.prop( "src", "/user-frame?id=" + e.currentTarget.id);
+		frame.prop( "src", "/chat/private/" + e.currentTarget.id);
 	  } 
 	});
 };

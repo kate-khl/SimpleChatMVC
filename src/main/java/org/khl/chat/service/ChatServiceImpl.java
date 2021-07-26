@@ -1,26 +1,22 @@
 package org.khl.chat.service;
 
 import java.util.Collection;
-import java.util.List;
 
 import javax.transaction.Transactional;
 
-import org.khl.chat.Session;
 import org.khl.chat.dao.ChatDao;
 import org.khl.chat.dao.MessageDao;
 import org.khl.chat.dao.UserDao;
 import org.khl.chat.dto.ChatDto;
 import org.khl.chat.dto.CreateChatRequest;
-import org.khl.chat.dto.MessageDto;
 import org.khl.chat.entity.Chat;
 import org.khl.chat.entity.ChatType;
 import org.khl.chat.entity.Message;
 import org.khl.chat.entity.User;
 import org.khl.chat.exception.AccessControlException;
 import org.khl.chat.mapper.ChatMapper;
-import org.khl.chat.mapper.MessageMapper;
 import org.khl.chat.security.CustomUserDetails;
-import org.modelmapper.ModelMapper;
+import org.khl.chat.security.UserHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
@@ -41,10 +37,6 @@ public class ChatServiceImpl implements ChatService{
 	@Autowired
 	private MessageDao msgDao;
 	@Autowired
-	private Session session;
-	@Autowired
-	private MessageMapper messageMapper;
-	@Autowired
 	private ChatMapper chatMapper;
 	
 	@Override
@@ -55,7 +47,7 @@ public class ChatServiceImpl implements ChatService{
 		c.setName(crChat.getName());
 		c.setUsers(uDao.findAllById(crChat.getUserIds()));
 		
-		User author = uDao.findById(session.getId()).get();
+		User author = uDao.findById(UserHelper.currentUser().getId()).get();
 		c.getUsers().add(author);
 		c.setAuthor(author);
 		chDao.save(c);
@@ -102,16 +94,17 @@ public class ChatServiceImpl implements ChatService{
 	@Transactional
 	public void removeChat(Long id) {
 		Chat c = chDao.getOne(id);
-		if(c.getAuthor().getId().equals(session.getId())) {
+		if(c.getAuthor().getId().equals(UserHelper.currentUser().getId())) {
 			chDao.delete(c);
 		} else 
 		throw new AccessControlException();
 	}
 
 	@Override
+	@Transactional
 	public ChatDto createPrivateChatWithUserIfNotExist(Long userId) {
 		CustomUserDetails userDetails = (CustomUserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		User author = uDao.findByEmail(userDetails.getUsername()).get();
+		User author = uDao.findByEmail(userDetails.getEmail()).get();
 		User companion = uDao.findById(userId).get();
 		
 		Long hash = userId + author.getId();

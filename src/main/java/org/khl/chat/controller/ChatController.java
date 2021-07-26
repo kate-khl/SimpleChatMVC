@@ -34,16 +34,20 @@ import org.springframework.web.context.WebApplicationContext;
 public class ChatController {
 
 	private final ChatService chatService;
+	private final UserService userService;
 	
 	@Autowired
-	public ChatController(@Qualifier("db") ChatService chatService) {
+	public ChatController(@Qualifier("db") ChatService chatService
+			, @Qualifier("db") UserService userService) {
 		this.chatService = chatService;
+		this.userService = userService;
 	}
 	
-	@GetMapping("/user-frame")
-	public String getChatrFrame(Model model, @RequestParam Long id) {
+	@GetMapping("/chat/private/{id}")
+	public String getChatrFrame(Model model, @PathVariable Long id) {
 		ChatDto ch = chatService.createPrivateChatWithUserIfNotExist(id);
 		model.addAttribute("chat", ch);
+		model.addAttribute("companion", userService.findById(id));
 		return "ChatFrame";
 	} 
 	
@@ -71,9 +75,6 @@ public class ChatController {
 	public void removeUsers(@RequestBody @Valid Collection <Long> userIds, @PathVariable(name = "id") Long chat_id) {
 		chatService.removeUsers(userIds, chat_id);
 	}
-	
-	@Autowired
-	private UserService userService;
 	
 	@GetMapping("/chat")
 	public String getAllUsers(Model model) {

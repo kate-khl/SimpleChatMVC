@@ -26,7 +26,8 @@ public class WebSecurityConfig {
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
 			http.antMatcher("/chat/**").authorizeRequests().anyRequest().hasRole("USER")
-			.and().authenticationProvider(new JwtAuthentiticationProvider(tokens))
+			.and().headers().frameOptions().disable()
+			.and().authenticationProvider(new JwtAuthentiticationProvider(tokens)).csrf().disable()
 			.addFilterBefore(new AuthFilter(), UsernamePasswordAuthenticationFilter.class)
 			.formLogin();
 		}
@@ -42,9 +43,11 @@ public class WebSecurityConfig {
 		protected void configure(HttpSecurity http) throws Exception {
 			http
 			.authorizeRequests().requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+			.and().authorizeRequests().antMatchers("/h2-console/**").permitAll()
 			.anyRequest().authenticated()
 			.and().formLogin().loginPage("/login").permitAll().successHandler(new MyAuthenticationSuccessHandler(tokens, "/chat", true))
 			.and().logout().deleteCookies(Constant.JWT_TOKEN)
+			.and().headers().frameOptions().disable()
 			.and().httpBasic().disable().csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		}
 		

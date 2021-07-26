@@ -1,8 +1,7 @@
 package org.khl.chat.controller;
 
+import java.util.Arrays;
 import java.util.Collection;
-
-import javax.validation.Valid;
 
 import org.khl.chat.dto.MessageDto;
 import org.khl.chat.dto.PageParams;
@@ -12,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,17 +29,21 @@ import org.springframework.web.context.WebApplicationContext;
 public class MessageController {
 
 	MessageService messageService;
-	
+
 	@Autowired 
 	public MessageController(@Qualifier("db") MessageService messageService) {
 		this.messageService = messageService;
 	}
 	
-	@PostMapping ("chats/{id}/messages")
+	@PostMapping ("/chat/api/v1/chats/{id}/messages")
 	@ResponseStatus(code = HttpStatus.OK)
 	public void send(@PathVariable(name = "id") Long chatId, @RequestBody SendMessageRequest smReq) {
-		messageService.send(smReq, chatId);
+		MessageDto msg = messageService.send(smReq, chatId);
+		simpMessagingTemplate.convertAndSend("/chat/" + chatId, Arrays.asList(msg));
 	}
+	
+	@Autowired
+	private SimpMessagingTemplate simpMessagingTemplate;
 	
 	@DeleteMapping ("/messages/{id}")
 	@ResponseStatus(code = HttpStatus.OK)

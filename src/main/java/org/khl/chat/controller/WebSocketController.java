@@ -1,27 +1,32 @@
 package org.khl.chat.controller;
 
 import java.security.Principal;
+import java.util.Collection;
 
+import org.khl.chat.dto.MessageDto;
+import org.khl.chat.dto.PageParams;
+import org.khl.chat.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 
 @Controller
 public class WebSocketController {
 
-	@MessageMapping("/hello")
-	@SendTo("/topic/greetings")
-	public String greeting(String message) throws Exception {
-		return message;
+	@Autowired
+	MessageService messageService;
+	
+	@SubscribeMapping("/chat/{id}") 
+	public Collection<MessageDto> greeting(@DestinationVariable Long id) throws Exception {
+		Collection<MessageDto> messages = messageService.getMessages(id, new PageParams(0, Integer.MAX_VALUE));
+		return messages;
 	}
 
-	@Autowired
-	private SimpMessagingTemplate simpMessagingTemplate;
 
 	@MessageMapping("/chatr")
 	public void message(@Payload Message<String> msg, Principal user, @Header("simpSessionId") String sessionId)	throws Exception {
