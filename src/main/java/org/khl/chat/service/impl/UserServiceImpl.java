@@ -1,4 +1,4 @@
-package org.khl.chat.service;
+package org.khl.chat.service.impl;
 
 import java.util.Collection;
 import java.util.List;
@@ -16,12 +16,12 @@ import org.khl.chat.entity.User;
 import org.khl.chat.exception.NotAuthorizeException;
 import org.khl.chat.mapper.ChatMapper;
 import org.khl.chat.mapper.UserMapper;
+import org.khl.chat.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service
-@Qualifier("db")
 public class UserServiceImpl implements UserService{
 
 	@Autowired

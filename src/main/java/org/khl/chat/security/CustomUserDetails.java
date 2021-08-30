@@ -16,7 +16,7 @@ import lombok.Getter;
 public class CustomUserDetails implements UserDetails {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	@Getter
 	private Long id;
 	private String usrename;
@@ -27,17 +27,11 @@ public class CustomUserDetails implements UserDetails {
 	private Role role;
 
 	public static CustomUserDetails from(UserDto user) {
-		CustomUserDetails details = CustomUserDetails.builder()
-		.password(user.getPassword())
-		.usrename(user.getName())
-		.email(user.getEmail())
-		.id(user.getId())
-		.role(user.getRole())
-		.build();
+		CustomUserDetails details = CustomUserDetails.builder().password(user.getPassword()).usrename(user.getName())
+				.email(user.getEmail()).id(user.getId()).role(user.getRole()).build();
 		return details;
 	}
-	
-	
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return Collections.singletonList(new SimpleGrantedAuthority(role.name()));

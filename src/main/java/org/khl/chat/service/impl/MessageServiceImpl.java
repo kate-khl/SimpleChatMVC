@@ -1,6 +1,5 @@
-package org.khl.chat.service;
+package org.khl.chat.service.impl;
 
-import java.util.Arrays;
 import java.util.Collection;
 
 import javax.transaction.Transactional;
@@ -17,91 +16,72 @@ import org.khl.chat.entity.User;
 import org.khl.chat.exception.AccessControlException;
 import org.khl.chat.mapper.MessageMapper;
 import org.khl.chat.security.UserHelper;
+import org.khl.chat.service.MessageService;
+import org.khl.chat.util.DateHelper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
-@Qualifier("db") 
-public class MessageServiceImpl implements MessageService{
+public class MessageServiceImpl implements MessageService {
+
+	private final MessageDao msgDao;
+	private final ChatDao chDao;
+	private final UserDao uDao;
+	private final MessageMapper messageMapper;
 
 	@Autowired
-	private MessageDao msgDao; 
-	@Autowired
-	private ChatDao chDao; 
-	@Autowired
-	private UserDao uDao; 
-	@Autowired
-	private  MessageMapper messageMapper;
-	
+	public MessageServiceImpl(MessageDao msgDao, ChatDao chDao, UserDao uDao, MessageMapper messageMapper) {
+		super();
+		this.msgDao = msgDao;
+		this.chDao = chDao;
+		this.uDao = uDao;
+		this.messageMapper = messageMapper;
+	}
 
-	
 	@Override
 	@Transactional
-	public MessageDto send(SendMessageRequest smReq, Long chatId) {
-		Chat ch = chDao.findById(chatId).get();
+	public MessageDto send(SendMessageRequest request, Long chatId) {
+		Chat chat = chDao.findById(chatId).get();
 		User author = uDao.findById(UserHelper.currentUser().getId()).get();
-		Message msg = new Message(smReq.getValue(), author, ch);
+		Message msg = Message.builder().value(request.getValue()).author(author).chat(chat).date(DateHelper.now())
+				.build();
 		msgDao.save(msg);
-		MessageDto result = messageMapper.toDto(msg);
-		return result;
+
+		return messageMapper.toDto(msg);
 	}
 
 	@Override
 	public void delete(Long id) {
-		
+
 		Message msg = msgDao.findById(id).get();
-		if(msg.getAuthor().getId().equals(UserHelper.currentUser().getId())) {
+		if (msg.getAuthor().getId().equals(UserHelper.currentUser().getId())) {
 			msgDao.delete(msg);
-		} else 
+		} else
 			throw new AccessControlException();
 	}
 
 	@Override
 	public MessageDto edit(Long id, String text) {
-		
+
 		Message msg = msgDao.findById(id).get();
-		if(msg.getAuthor().getId().equals(UserHelper.currentUser().getId())) {
+		if (msg.getAuthor().getId().equals(UserHelper.currentUser().getId())) {
 			msg.setValue(text);
 			msgDao.save(msg);
 			return messageMapper.toDto(msg);
-		} else 
+		} else
 			throw new AccessControlException();
 	}
-	
+
 	@Override
-	public Collection<MessageDto> getMessages(Long chatId, PageParams pp){
-			
+	public Collection<MessageDto> getMessages(Long chatId, PageParams pp) {
+
 		Pageable psgeParams = PageRequest.of(pp.getPage(), pp.getSize());
-		
-		Collection<Message> msgs =  msgDao.findByChatId(chatId); //msgDao.findByChatId(chatId, psgeParams);
+
+		Collection<Message> msgs = msgDao.findByChatId(chatId); // msgDao.findByChatId(chatId, psgeParams);
 		Collection<MessageDto> msgDtos = messageMapper.toListOfDto(msgs);
 		return msgDtos;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-	
-	
-	
-	
-	
-	
 
 }

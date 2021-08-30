@@ -11,55 +11,41 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 
-import org.khl.chat.DateHelper;
-import org.khl.chat.dto.MessageDto;
+import org.khl.chat.util.DateHelper;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Entity
+@Builder
 public class Message {
 
 	@Id
-    @SequenceGenerator(name = "msgGen")
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@SequenceGenerator(name = "msgGen")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String value;
-	
+
 	@ManyToOne(optional = false, cascade = CascadeType.ALL)
 	@JoinColumn(name = "author_id")
 	private User author;
-	
-	private OffsetDateTime date = DateHelper.now();
-	
+
+	private OffsetDateTime date;
+
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "chat_id")
 	private Chat chat;
-	
-	public Message() {}
-	
-	public Message(Long id, String value, User author, OffsetDateTime date) {
-		super();
-		this.id = id;
-		this.value = value;
-		this.author = author;
-		this.date = date;
-	}
-	
-	public Message(MessageDto msgDto) {
-		super();
-		this.id = msgDto.getId();
-		this.value = msgDto.getValue();
-		this.date = msgDto.getDate();
-	}
-	
-	public Message(String value, User author, Chat chat) {
 
-		this.value = value;
-		this.author = author;
-		this.date = DateHelper.now();
-		this.chat = chat;
-	}
-	
-	
+//	public Message() {
+//	}
+//
+//	public Message(String value, User author, Chat chat) {
+//
+//		this.value = value;
+//		this.author = author;
+//		this.date = DateHelper.now();
+//		this.chat = chat;
+//	}
+
 }

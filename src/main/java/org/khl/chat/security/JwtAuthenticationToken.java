@@ -6,10 +6,10 @@ import java.util.Collections;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
-public class JwtAuthenticationToken extends AbstractAuthenticationToken{
+public class JwtAuthenticationToken extends AbstractAuthenticationToken {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private final Object credentials;
 	private final Object principal;
 

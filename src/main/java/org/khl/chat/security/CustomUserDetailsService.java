@@ -13,11 +13,11 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 	@Autowired
 	UserService userService;
-	
+
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		UserDto user = userService.findUserByEmail(username);
-		if(user == null) {
+		if (user == null) {
 			throw new UsernameNotFoundException("not found " + username);
 		}
 		return CustomUserDetails.from(user);

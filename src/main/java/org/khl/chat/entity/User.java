@@ -28,6 +28,7 @@ public class User {
 
 	@Column(unique = true)
 	private String email;
+
 	private String password;
 
 	@Enumerated(EnumType.STRING)
@@ -37,22 +38,6 @@ public class User {
 	private Collection<Chat> chats;
 
 	public User() {
-	}
-
-	public User(Long id, String name, String email, String password, Role role) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.email = email;
-		this.password = password;
-		this.role = role;
-	}
-
-	public User(UserDto u) {
-		this.id = u.getId();
-		this.name = u.getName();
-		this.email = u.getEmail();
-		this.role = u.getRole();
 	}
 
 }

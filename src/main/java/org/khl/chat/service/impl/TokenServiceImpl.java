@@ -1,4 +1,4 @@
-package org.khl.chat.service;
+package org.khl.chat.service.impl;
 
 import java.util.Base64;
 import java.util.Date;
@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 import org.khl.chat.common.Role;
 import org.khl.chat.dto.UserDto;
 import org.khl.chat.security.CustomUserDetails;
+import org.khl.chat.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;

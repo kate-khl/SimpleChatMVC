@@ -1,6 +1,9 @@
-package org.khl.chat.security;
+package org.khl.chat.config;
 
 import org.khl.chat.common.Constant;
+import org.khl.chat.security.AuthFilter;
+import org.khl.chat.security.JwtAuthentiticationProvider;
+import org.khl.chat.security.MyAuthenticationSuccessHandler;
 import org.khl.chat.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;

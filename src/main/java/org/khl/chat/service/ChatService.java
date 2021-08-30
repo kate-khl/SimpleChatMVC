@@ -10,15 +10,18 @@ import org.khl.chat.entity.Chat;
 
 public interface ChatService {
 
-	public ChatDto createChat(CreateChatRequest chat);
+	public ChatDto createPublicChat(CreateChatRequest chat);
+
 	public void addUsers(Collection<Long> userIds, Long id);
+
 	public void removeUsers(Collection<Long> userIds, Long id);
+
 	public Collection<ChatDto> getChats(Long userId);
+
 	public void removeChat(Long id);
+
 	public ChatDto findChat(Long id);
-//	public Collection<MessageDto> getMessages(Long chatId);
+
 	public ChatDto createPrivateChatWithUserIfNotExist(Long id);
-	
-	
-	
+
 }

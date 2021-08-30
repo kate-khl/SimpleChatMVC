@@ -8,7 +8,8 @@ import lombok.experimental.UtilityClass;
 public class UserHelper {
 
 	public static CustomUserDetails currentUser() {
-		CustomUserDetails details = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		CustomUserDetails details = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication()
+				.getPrincipal();
 		return details;
-	} 
+	}
 }
