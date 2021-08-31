@@ -41,11 +41,11 @@ public class Chat {
 	@ManyToOne(optional = false, cascade = CascadeType.ALL)
 	@JoinColumn(name = "author_id")
 	private User author;
-	
+
 	@Default
 	@OneToMany(mappedBy = "chat")
 	private Collection<Message> messages = new ArrayList<>();
-	
+
 	@Default
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinTable(name = "users_chats", joinColumns = @JoinColumn(name = "chat_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))

@@ -20,5 +20,5 @@ public class ChatDto {
 	private UserDto author;
 	@Default
 	private List<MessageDto> messages = new ArrayList<>();
-	
+
 }

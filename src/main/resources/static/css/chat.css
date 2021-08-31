@@ -1,0 +1,50 @@
+.message-panel {
+	overflow-y: auto;
+	height: 300px;
+}
+
+.message-panel-title {
+	display: flex;
+}
+
+.message-panel-title-head {
+	padding-right: 10px;
+}
+
+.message-panel-title-name {
+	color: #69ce0e;
+}
+
+.message-container-out {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	margin: 10px;
+}
+
+.message-container-in {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	margin: 10px;
+}
+
+.message-content-out {
+	border-radius: 50px 50px 50px 50px;
+	background: #72f776;
+	border: 1px solid black;
+	padding: 10px;
+	width: 150px;
+	text-align: center;
+	align-self: flex-end;
+}
+
+.message-content-in {
+	border-radius: 50px 50px 50px 50px;
+	background: #f0f1da;
+	border: 1px solid black;
+	padding: 10px;
+	width: 150px;
+	text-align: center;
+	align-self: flex-start;
+}

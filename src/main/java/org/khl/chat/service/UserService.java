@@ -8,24 +8,23 @@ import org.khl.chat.dto.UserDto;
 
 public interface UserService {
 
+	UserDto create(RegistrationUserRequest user);
 
-	   UserDto create(RegistrationUserRequest user);
-	   
-	   Collection<UserDto> getAllUsers();
-	   
-	   UserDto findById(Long id);
-	   
-	   boolean edit(UserDto userDto);
-	   
-	   boolean remove(Long id);
-	   
-	   boolean checkLogin(String email, String password);
-	   
-	   UserDto findUserByEmail (String Email);
-	   
-	   public Collection<ChatDto> getChats(Long userId);
-	   
-	   public Collection<UserDto> getUsers(Long chatId);
-	   
-	   public Collection<UserDto> findByName(String name);
+	Collection<UserDto> getAllUsers();
+
+	UserDto findById(Long id);
+
+	boolean edit(UserDto userDto);
+
+	boolean remove(Long id);
+
+	boolean checkLogin(String email, String password);
+
+	UserDto findUserByEmail(String Email);
+
+	public Collection<ChatDto> getChats(Long userId);
+
+	public Collection<UserDto> getUsers(Long chatId);
+
+	public Collection<UserDto> findByName(String name);
 }

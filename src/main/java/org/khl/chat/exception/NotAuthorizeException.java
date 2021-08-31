@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
-public class NotAuthorizeException extends RuntimeException{
+public class NotAuthorizeException extends RuntimeException {
 
 	public NotAuthorizeException() {
 		super();
@@ -16,5 +16,4 @@ public class NotAuthorizeException extends RuntimeException{
 		// TODO Auto-generated constructor stub
 	}
 
-	
 }

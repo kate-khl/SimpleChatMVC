@@ -15,13 +15,9 @@ public class UserDto {
 
 	private Long id;
 	@NotBlank
-	@NotNull
 	private String name;
-	@Email
-	@NotNull
+	@Email @NotNull
 	private String email;
-	@NotBlank
-	@NotNull
 	private Role role;
 	@NotBlank
 	@NotNull
@@ -30,12 +26,23 @@ public class UserDto {
 	public UserDto() {
 	}
 
-	public UserDto(String name, String email, String password, Role role) {
+	public UserDto(Long id, String name, String email, String password, Role role) {
 		super();
+		this.id = id;
 		this.name = name;
 		this.email = email;
 		this.role = role;
 		this.password = password;
 	}
+
+	public UserDto(Long id, @NotBlank @NotNull String name, @Email @NotNull String email, Role role) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.email = email;
+		this.role = role;
+	}
+	
+	
 
 }
