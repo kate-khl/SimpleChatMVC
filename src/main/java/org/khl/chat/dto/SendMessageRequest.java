@@ -1,11 +1,10 @@
 package org.khl.chat.dto;
 
-public class SendMessageRequest {
-	
-	private String value;
+import lombok.Data;
 
-	public String getValue() {
-		return value;
-	}
+@Data
+public class SendMessageRequest {
+
+	private String value;
 
 }

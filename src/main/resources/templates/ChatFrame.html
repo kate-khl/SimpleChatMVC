@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" th:href="@{/css/chat.css}" />
+	<script src="/webjars/jquery/jquery.min.js"></script>
+	<script src="/webjars/sockjs-client/sockjs.min.js"></script>
+	<script src="/webjars/stomp-websocket/stomp.min.js"></script>
+	<script src="/js/chat.js"></script>
+</head>
+
+<body>
+	<div layout:fragment="content" th:remove="tag">
+		<div class="chat-panel">
+			<div class="message-panel-title">
+				<div class="message-panel-title-head">Chat with:</div>
+				<div class="message-panel-title-name"
+					th:utext="${companion.getName()}"></div>
+			</div>
+			<div class="message-panel" id="messages">
+				<!-- 
+				<div th:each="msg : ${chat.messages}" class="message-container">
+					<div th:text = "${msg.value}" class="message-content-out"></div>
+				</div>
+			 -->
+			</div>
+			<div class="send-panel">
+				<input class="form-control" type="text" id="text-field"
+					th:attr="data-chat-id=${chat.getId()}" /> <input type="button"
+					id="send-msg" class="form-control btn btn-info" value="send" />
+			</div>
+		</div>
+	</div>
+</body>
+</html>

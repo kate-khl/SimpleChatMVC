@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{fragments/layout}">
+<head>
+<meta charset="UTF-8">
+<title>Orders</title>
+	<script src="/webjars/jquery/jquery.min.js"></script>
+	<script src="/js/main.js"></script>
+	<!--
+	<script src="/webjars/sockjs-client/sockjs.min.js"></script>
+	<script src="/webjars/stomp-websocket/stomp.min.js"></script>
+	<script src="/js/app.js"></script>
+	-->
+</head>
+
+<body>
+	<div layout:fragment="content" th:remove="tag">
+		<h1>Пользователи</h1>
+		<table>
+			<tr>
+				<th>Name</th>
+				<th>Email</th>
+			</tr>
+			<th:block th:each="user : ${users}">
+				<tr th:id = "${user.id}" name="userLine">
+					<td th:text="${user.name}"></td>
+					<td th:text="${user.email}"></td>
+				</tr>
+			</th:block>
+		</table>
+		<div>
+			 <iframe width="800" height="400" align="left" hidden id="frame"> 
+		 	</iframe>
+		</div>
+	</div>
+</body>
+</html>

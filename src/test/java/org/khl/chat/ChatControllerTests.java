@@ -5,8 +5,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import javax.servlet.http.Cookie;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.khl.chat.common.Constant;
+import org.khl.chat.common.Role;
+import org.khl.chat.dto.UserDto;
 import org.khl.chat.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -19,47 +24,77 @@ import org.springframework.web.context.WebApplicationContext;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Sql(scripts="classpath:data.sql")
+@Sql(scripts = "classpath:data.sql")
 public class ChatControllerTests {
 
 	@Autowired
 	private MockMvc mockMvc;
 	@Autowired
-    private WebApplicationContext context;
-    @Autowired
-    private TokenService tokenService;
-    
+	private WebApplicationContext context;
+	@Autowired
+	private TokenService tokenService;
+
 	@Test
 	public void createChat() throws Exception {
-		mockMvc.perform(post("/chats")	
-			.header("Authorization", tokenService.getToken("user1@test.com", "123"))
-			.content("{\"name\":\"chatName1\",\"userIds\": [1001],\"message\" : \"Привет\"}")
-			.contentType(MediaType.APPLICATION_JSON))
-		.andExpect(status().isCreated());
+		mockMvc.perform(
+				post("/chat/api/v1/chats")
+						.cookie(new Cookie(Constant.JWT_TOKEN,
+								tokenService.createToken(
+										new UserDto(1000l, "UserName1", "user1@test.com", "123", Role.ROLE_USER))))
+						.content("{\"name\":\"chatName1\",\"userIds\": [1001],\"message\" : \"Привет\"}")
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isCreated());
 	}
-	
+
+	@Test
+	public void getChats() throws Exception {
+		mockMvc.perform(
+				get("/chat/api/v1/users/{id}/chats", 1000)
+					.cookie(new Cookie(Constant.JWT_TOKEN,
+							tokenService.createToken(new UserDto(1000l, "UserName1", "user1@test.com", "123", Role.ROLE_USER)))))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	public void getMessages() throws Exception {
+		mockMvc.perform(
+				get("/chat/api/v1/users/{id}/chats", 1000)
+					.cookie(new Cookie(Constant.JWT_TOKEN,
+							tokenService.createToken(new UserDto(1000l, "UserName1", "user1@test.com", "123", Role.ROLE_USER)))))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	public void sendMessage() throws Exception {
+		mockMvc.perform(
+				post("/chat/api/v1/chats/{id}/messages", 1004)
+						.cookie(new Cookie(Constant.JWT_TOKEN,
+								tokenService.createToken(
+										new UserDto(1000l, "UserName1", "user1@test.com", "123", Role.ROLE_USER))))
+						.content("{\"value\" : \"msg\"}").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
+
+	}
+
 	@Test
 	public void addUsers() throws Exception {
-		mockMvc.perform(post("/chats/{id}/users", 1004)	
-			.header("Authorization", tokenService.getToken("user1@test.com", "123"))
-			.content("[1002, 1003]")
-			.contentType(MediaType.APPLICATION_JSON))
-		.andExpect(status().isOk());
+		mockMvc.perform(
+				post("/chat/api/v1/chats/{id}/users", 1004)
+						.cookie(new Cookie(Constant.JWT_TOKEN,
+								tokenService.createToken(
+										new UserDto(1000l, "UserName1", "user1@test.com", "123", Role.ROLE_USER))))
+						.content("[1002, 1003]").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
 	}
-	
-	
-	@Test public void getChats() throws Exception {
-	mockMvc.perform(get("/user/{id}/chats", 1000)
-			.header("Authorization", tokenService.getToken("user1@test.com", "123")))
-	.andExpect(status().isCreated());
-}
-	
+
 	@Test
 	public void removeUsers() throws Exception {
-		mockMvc.perform(delete("/chats/{id}/users", 1004)	
-			.header("Authorization", tokenService.getToken("user1@test.com", "123"))
-			.content("[1001]")
-			.contentType(MediaType.APPLICATION_JSON))
-		.andExpect(status().isOk());
+		mockMvc.perform(
+				delete("/chat/api/v1/chats/{id}/users", 1004)
+						.cookie(new Cookie(Constant.JWT_TOKEN,
+								tokenService.createToken(
+										new UserDto(1000l, "UserName1", "user1@test.com", "123", Role.ROLE_USER))))
+						.content("[1001]").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
 	}
 }

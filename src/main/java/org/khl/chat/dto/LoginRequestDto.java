@@ -5,7 +5,7 @@ import javax.validation.constraints.NotNull;
 public class LoginRequestDto {
 
 	@NotNull
-	private String email;
+	private String username;
 	private String password;
 
 	public LoginRequestDto() {
@@ -13,16 +13,16 @@ public class LoginRequestDto {
 
 	public LoginRequestDto(String email, String password) {
 		super();
-		this.email = email;
+		this.username = email;
 		this.password = password;
 	}
 
 	public String getEmail() {
-		return email;
+		return username;
 	}
 
 	public void setEmail(String email) {
-		this.email = email;
+		this.username = email;
 	}
 
 	public String getPassword() {

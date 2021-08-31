@@ -4,12 +4,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
-public class AccessControlException extends RuntimeException{
+public class AccessControlException extends RuntimeException {
 
-	public AccessControlException(){
+	public AccessControlException() {
 		super();
 	}
-	public AccessControlException(String message){
+
+	public AccessControlException(String message) {
 		super(message);
 	}
 }

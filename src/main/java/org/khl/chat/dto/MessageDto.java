@@ -1,21 +1,21 @@
 package org.khl.chat.dto;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
-import org.khl.chat.entity.Chat;
-import org.khl.chat.entity.Message;
-import org.khl.chat.entity.User;
+import lombok.Data;
 
+@Data
 public class MessageDto {
-	
+
 	private Long id;
 	private String value;
 	private UserDto author;
-	private Date date;
+	private OffsetDateTime date;
 
-	public MessageDto() {}
-	
-	public MessageDto(Long id, String value, UserDto author, Date date) {
+	public MessageDto() {
+	}
+
+	public MessageDto(Long id, String value, UserDto author, OffsetDateTime date) {
 		super();
 		this.id = id;
 		this.value = value;
@@ -23,36 +23,10 @@ public class MessageDto {
 		this.date = date;
 	}
 
-	
 	public MessageDto(String value, ChatDto chatDto, UserDto authorDto) {
 		this.value = value;
 		this.author = authorDto;
-		this.date = new Date();
+		this.date = OffsetDateTime.now();
 	}
-	
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	public String getValue() {
-		return value;
-	}
-	public void setValue(String value) {
-		this.value = value;
-	}
-	public UserDto getAuthor() {
-		return author;
-	}
-	public void setAuthor(UserDto author) {
-		this.author = author;
-	}
-	public Date getDate() {
-		return date;
-	}
-	public void setDate(Date date) {
-		this.date = date;
-	}
-	
+
 }
